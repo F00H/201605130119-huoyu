@@ -52,3 +52,100 @@ for key, value in word_dic.items():
 	fp.write("\n")
 	#fp.write(key + " " + " ".join(value))
 fp.close()
+
+
+
+import json
+import nltk
+
+def init():
+	fp = open("bool.txt", "r")
+	word_dic = {}
+	for i in fp.readlines():
+		j = i.strip().split('[')
+		k = j[1][:-1].split(', ')
+		word_dic[j[0][:-1]] = [int(x) for x in k]
+	return word_dic
+
+def Or(x, y):
+	n = len(x)
+	m = len(y)
+	i = 0
+	j = 0
+	z = []
+	while i < n or j < m:
+		if j == m or x[i] < y[j]:
+			z.append(x[i])
+			i += 1
+		elif i == n or x[i] > y[j]:
+			z.append(y[j])
+			j += 1;
+		else :
+			z.append(x[i])
+			i += 1
+			j += 1
+	return z
+
+def And(x, y):
+	n = len(x)
+	m = len(y)
+	i = 0
+	j = 0
+	z = []
+	while i < n and j < m:
+		if x[i] < y[j]:
+			i += 1
+		elif x[i] > y[j]:
+			j += 1;
+		else :
+			z.append(x[i])
+			i += 1
+			j += 1
+	return z
+
+def Sub(x, y):
+	y = And(x, y)
+	n = len(x)
+	m = len(y)
+	i = 0
+	j = 0
+	z = []
+	while i < n or j < m:
+		if j == m or x[i] < y[j]:
+			z.append(x[i])
+			i += 1
+		else :
+			i += 1
+			j += 1
+	return z		
+
+def Calc(s, word_dic):
+	a = s.split()
+	n = len(a)
+	z = word_dic[a[0]]
+	i = 0
+	while i + 2 < n:
+		y = word_dic[a[2]]
+		if a[i + 1] == '&':
+			z = And(z, y)
+		elif a[i + 1] == '|':
+			z = Or(z, y)
+		elif a[i + 1] == '-':
+			z = Sub(z, y)
+		i += 2
+	return z
+
+def main():
+	word_dic = init()
+	s = 'shit & fuck'
+	fp = open("article.txt", "r")
+	article = fp.readlines()
+	list0 = Calc(s, word_dic)
+	print(list0)
+	for i in list0:
+		print(article[i])
+
+if __name__ == '__main__':
+	main()
+
+
