@@ -107,3 +107,6 @@ def get_my_result():
 
 if __name__ == '__main__':
 	get_my_result()
+
+	
+	#照着学长的格式装扮了一下自己代码
